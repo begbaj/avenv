@@ -2,11 +2,14 @@
 
 Avenv is a very simple **bash** script to activate and create python virtual environments with ease.
 
-## Background
+## Why?
+Many asked me. There are a lot of other options out there, so why this?
+Because it is handy to me. There is no other reason.
 
-I firstly developed this because I didn't like the management via the `venv` module directly, it seemd too verbose, and to activate a venv you needed to look for `activate` script.
-Also, many times, I need just one virtual environment for many projects, like a "global" virtual environment. I didn't want to use `conda` and other solutions seemed to me too complex for such a simple task.
-Thus, **avenv** (which initially stood for "activate venv", and there was a "mkvenv" which obviously created a venv).
+I simply didn't like other workflows. And some years ago I developed this one that just resulted to be extreamly optimal for me.
+Besides: this is not an entire program, aliases do not do the same thing this script does, and is not changing anything on the package management structure itself.
+It just changes WHERE virtual environments are stored, and makes access easier than just `python -m venv venv` and then `source .venv/bin/activate`. Also, this
+doesn't even let you source the activate script from anywhere else than the directory where the venv is stored itself. Unless you are confortable writing absolute path strings.
 
 ## How it Works
 
