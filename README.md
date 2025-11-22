@@ -1,6 +1,6 @@
 # Avenv
 
-Avenv is a very simple **bash** script to manage python virtual environments with ease.
+Avenv is a very simple **bash** script to activate and create python virtual environments with ease.
 
 ## Background
 
