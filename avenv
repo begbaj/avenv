@@ -1,5 +1,5 @@
 #!/bin/bash
-# avenv - a really really simple python venv manager bash script
+# avenv - simple bash script to manage python virtual environments
 
 function init() {
   if [ -z "$VENVDIR" ]; then
