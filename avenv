@@ -84,15 +84,24 @@ function mkvenv() {
   fi
   echo "Creating venv $venvname"
 
-  cd "$VENVDIR" || echo "couldn't access $VEVNDIR" | return
-  python -m venv "$venvname"
+  cd "$VENVDIR" || { echo "couldn't access $VENVDIR"; return; }
 
-  shift
-  # Iterate through the remaining arguments
-  for arg in "$@"; do
-    cd "$venvname" || echo "couldn't access $venvname" | return
-    bin/python -m -- pip install "$arg"
-  done
+  if command -v uv &> /dev/null; then
+    uv venv "$venvname"
+    shift
+    if [ "$#" -gt 0 ]; then
+      uv pip install "$@"
+    fi
+  else
+    python -m venv "$venvname"
+    shift
+    if [ "$#" -gt 0 ]; then
+      # shellcheck source=/dev/null
+      source "$venvname/bin/activate"
+      pip install "$@"
+      deactivate
+    fi
+  fi
 }
 
 function rmvenv() {
@@ -106,17 +115,13 @@ function rmvenv() {
 
   read -r -n 1 -p "Delete $venvname? (y/N) " answer
   echo
-  case "$answer" in
-  y | Y)
+  if [[ $answer =~ ^[Yy]$ ]]; then
     rm -r -- "$target"
     echo "Deleted $venvname."
-    return 0
-    ;;
-  *)
+  else
     echo "Aborted."
-    return 0
-    ;;
-  esac
+  fi
+  return 0
 }
 
 function show_help() {
@@ -162,6 +167,8 @@ Examples:
 Notes:
   By default, virtual environments are stored in: ~/.local/virtualenvs.
   You can set the VENVDIR environment variable to change this location.
+  This script will use 'uv' by default if it is installed on your system.
+  Otherwise it will use python's 'venv' module and 'pip'.
   Important: to actually activate a venv, you schould run something like:
         source avenv myenv
 
@@ -173,7 +180,8 @@ check_directory
 
 case "$1" in
 -m | --make)
-  mkvenv "$2"
+  shift
+  mkvenv "$@"
   ;;
 
 -l | --list)
